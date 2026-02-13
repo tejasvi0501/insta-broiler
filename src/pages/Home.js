@@ -8,6 +8,8 @@ function Home() {
   const [category, setCategory] = useState("all");
   const [showCart, setShowCart] = useState(false);
   const [animateCart, setAnimateCart] = useState(false);
+  const [showCheckout, setShowCheckout] = useState(false);
+
 
   const menu = [
     { id: 1, name: "Fire Zinger Chicken", price: 199, category: "grill", image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd" },
@@ -85,6 +87,34 @@ function Home() {
       {/* CART */}
       {showCart && (
   <div className="cart-overlay" onClick={closeCart}>
+    {showCheckout && (
+  <div className="cart-overlay" onClick={() => setShowCheckout(false)}>
+    <div className="checkout-modal" onClick={(e) => e.stopPropagation()}>
+      <h2>Confirm Your Order</h2>
+      {cart.map(item => (
+        <div key={item.id} className="checkout-item">
+          <span>{item.name} x {item.quantity}</span>
+          <span>₹ {item.price * item.quantity}</span>
+        </div>
+      ))}
+      <h3>Total: ₹ {totalPrice}</h3>
+      <button
+        className="place-order-btn"
+        onClick={() => {
+          setCart([]);           // empty cart
+          setShowCheckout(false); // close checkout modal
+          alert("✅ Order Placed Successfully!"); // success message
+        }}
+      >
+        Place Order
+      </button>
+      <button className="back-btn" onClick={() => setShowCheckout(false)}>
+        Back to Cart
+      </button>
+    </div>
+  </div>
+)}
+
     <div className={`cart-panel ${animateCart ? "open" : ""}`} onClick={e => e.stopPropagation()}>
       
       <div className="cart-header">
@@ -111,9 +141,10 @@ function Home() {
 
       {/* Fixed checkout + total */}
       <div className="cart-footer">
-        <h3>Total: ₹ {totalPrice}</h3>
-        <button className="checkout-btn">Checkout</button>
-      </div>
+  <h3>Total: ₹ {totalPrice}</h3>
+  <button className="checkout-btn" onClick={() => setShowCheckout(true)}>Checkout</button>
+</div>
+
 
     </div>
   </div>
