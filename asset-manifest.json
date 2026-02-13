@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/insta-broiler/static/css/main.9102670a.css",
-    "main.js": "/insta-broiler/static/js/main.d72e1472.js",
+    "main.js": "/insta-broiler/static/js/main.6f0fb87f.js",
     "static/js/488.bef27254.chunk.js": "/insta-broiler/static/js/488.bef27254.chunk.js",
     "index.html": "/insta-broiler/index.html",
     "main.9102670a.css.map": "/insta-broiler/static/css/main.9102670a.css.map",
-    "main.d72e1472.js.map": "/insta-broiler/static/js/main.d72e1472.js.map",
+    "main.6f0fb87f.js.map": "/insta-broiler/static/js/main.6f0fb87f.js.map",
     "488.bef27254.chunk.js.map": "/insta-broiler/static/js/488.bef27254.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.9102670a.css",
-    "static/js/main.d72e1472.js"
+    "static/js/main.6f0fb87f.js"
   ]
 }
