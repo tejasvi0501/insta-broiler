@@ -1,0 +1,42 @@
+.burger-card {
+  background: white;
+  border-radius: 20px;
+  overflow: hidden;
+  box-shadow: 0 8px 20px rgba(0,0,0,0.08);
+  transition: 0.3s;
+  text-align: center;
+  padding-bottom: 20px;
+}
+
+.burger-card:hover {
+  transform: translateY(-8px);
+}
+
+.burger-card img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+}
+
+.burger-card h3 {
+  margin: 15px 0 5px;
+}
+
+.burger-card p {
+  font-weight: bold;
+  margin-bottom: 15px;
+}
+
+.burger-card button {
+  padding: 10px 20px;
+  border: none;
+  background-color: #ff4d00;
+  color: white;
+  border-radius: 25px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.burger-card button:hover {
+  background-color: #e63e00;
+}

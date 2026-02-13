@@ -1,0 +1,28 @@
+.navbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 40px;
+  background-color: black;
+  color: white;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.logo {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.cart-info {
+  cursor: pointer;
+  background-color: #ff4d00;
+  padding: 8px 15px;
+  border-radius: 20px;
+  transition: 0.3s;
+}
+
+.cart-info:hover {
+  background-color: #e63e00;
+}
