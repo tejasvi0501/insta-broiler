@@ -29,7 +29,7 @@ function Home() {
     { id: 8, name: "Cheese Loaded Fries", price: 119, category: "sides", image: "https://images.unsplash.com/photo-1541592106381-b31e9677c0e5" },
     { id: 9, name: "Classic Cold Coffee", price: 99, category: "drinks", image: "https://images.unsplash.com/photo-1498804103079-a6351b050096" },
     { id: 10, name: "Iced Chocolate Shake", price: 129, category: "drinks", image: "https://images.unsplash.com/photo-1572490122747-3968b75cc699" },
-    { id: 11,name: "Oreo Cream Cup",price: 89,category: "dessert",image: "https://cdn.pixabay.com/photo/2019/09/10/15/00/oreo-dessert-4478545_1280.jpg"},
+    { id: 11,name: "Oreo Cream Cup",price: 89,category: "dessert",image: "https://bestfriendsforfrosting.com/wp-content/uploads/2021/10/EASY-OREO-CHEESECAKE-CUPS-4-763x1024.jpg"},
     { id: 12, name: "Molten Lava Cake", price: 109, category: "dessert", image: "https://images.unsplash.com/photo-1606313564200-e75d5e30476c" }
   ];
 
