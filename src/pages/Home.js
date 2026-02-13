@@ -219,23 +219,26 @@ function Home() {
               <div className="checkout-modal">
                 <h2>Review Your Order</h2>
 
-                {cart.map((item) => (
-                  <div key={item.id} className="checkout-item">
-                    <span>{item.name}</span>
-                    <div className="checkout-qty">
-                      <button onClick={() => decreaseQty(item.id)}>-</button>
-                      <span>{item.quantity}</span>
-                      <button onClick={() => increaseQty(item.id)}>+</button>
-                    </div>
-                    <span>₹ {item.price * item.quantity}</span>
-                  </div>
-                ))}
+                <div className="cart-items">
+  {cart.map((item) => (
+    <div key={item.id} className="cart-item">
+      <div>
+        <h4>{item.name}</h4>
+        <p>₹ {item.price} x {item.quantity}</p>
+      </div>
+      <div className="cart-buttons">
+        <button onClick={() => decreaseQty(item.id)}>-</button>
+        <button onClick={() => increaseQty(item.id)}>+</button>
+      </div>
+    </div>
+  ))}
+</div>
 
-                <h3>Total: ₹ {totalPrice}</h3>
+<div className="cart-footer">
+  <h3>Total: ₹ {totalPrice}</h3>
+  <button className="checkout-btn">Checkout</button>
+</div>
 
-                <button className="place-order-btn" onClick={placeOrder}>
-                  Place Order
-                </button>
 
                 <button className="back-btn" onClick={() => setShowCheckout(false)}>
                   Back to Cart

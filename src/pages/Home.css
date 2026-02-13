@@ -310,3 +310,13 @@ body {
     font-size: 16px;
   }
 }
+.cart-items {
+  flex-grow: 1;         /* take available space */
+  overflow-y: auto;     /* make scrollable if many items */
+  margin-bottom: 15px;  /* space above footer */
+}
+
+.cart-footer {
+  /* footer pinned below scrollable area */
+  margin-top: auto;
+}
