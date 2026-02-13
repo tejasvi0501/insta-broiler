@@ -1,22 +1,13 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import BurgerCard from "../components/BurgerCard";
 import Navbar from "../components/Navbar";
 import "./Home.css";
 
 function Home() {
-  // 🛒 Cart with localStorage persistence
-  const [cart, setCart] = useState(() => {
-    const savedCart = localStorage.getItem("cart");
-    return savedCart ? JSON.parse(savedCart) : [];
-  });
-
+  const [cart, setCart] = useState([]);
   const [category, setCategory] = useState("all");
   const [showCart, setShowCart] = useState(false);
   const [animateCart, setAnimateCart] = useState(false);
-  const [showCheckout, setShowCheckout] = useState(false);
-
-  // 🔔 Toast notifications
-  const [toast, setToast] = useState({ show: false, message: "" });
 
   const menu = [
     { id: 1, name: "Fire Zinger Chicken", price: 199, category: "grill", image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd" },
@@ -29,123 +20,34 @@ function Home() {
     { id: 8, name: "Cheese Loaded Fries", price: 119, category: "sides", image: "https://images.unsplash.com/photo-1541592106381-b31e9677c0e5" },
     { id: 9, name: "Classic Cold Coffee", price: 99, category: "drinks", image: "https://images.unsplash.com/photo-1498804103079-a6351b050096" },
     { id: 10, name: "Iced Chocolate Shake", price: 129, category: "drinks", image: "https://images.unsplash.com/photo-1572490122747-3968b75cc699" },
-{ 
-  id: 11,
-  name: "Oreo Cream Cup",
-  price: 89,
-  category: "dessert",
-  image: "https://bestfriendsforfrosting.com/wp-content/uploads/2021/10/EASY-OREO-CHEESECAKE-CUPS-4-763x1024.jpg"
-},
+    { id: 11, name: "Oreo Cream Cup", price: 89, category: "dessert", image: "https://bestfriendsforfrosting.com/wp-content/uploads/2021/10/EASY-OREO-CHEESECAKE-CUPS-4-763x1024.jpg" },
     { id: 12, name: "Molten Lava Cake", price: 109, category: "dessert", image: "https://images.unsplash.com/photo-1606313564200-e75d5e30476c" }
   ];
 
-  // 🔄 Persist cart to localStorage
-  useEffect(() => {
-    localStorage.setItem("cart", JSON.stringify(cart));
-  }, [cart]);
+  // 🛒 Cart functions
+  const openCart = () => { setShowCart(true); setTimeout(() => setAnimateCart(true), 10); };
+  const closeCart = () => { setAnimateCart(false); setTimeout(() => setShowCart(false), 300); };
 
-  // 🔔 Toast
-  const showToast = (message) => {
-    setToast({ show: true, message });
-    setTimeout(() => setToast({ show: false, message: "" }), 2000);
-  };
-
-  // 🛒 Open Cart
-  const openCart = () => {
-    setShowCart(true);
-    setTimeout(() => setAnimateCart(true), 10);
-  };
-
-  // ❌ Close Cart
-  const closeCart = () => {
-    setAnimateCart(false);
-    setTimeout(() => setShowCart(false), 300);
-    setShowCheckout(false);
-  };
-
-  // ✅ Add to Cart
   const addToCart = (item) => {
-    const existingItem = cart.find((cartItem) => cartItem.id === item.id);
-
-    if (existingItem) {
-      setCart(
-        cart.map((cartItem) =>
-          cartItem.id === item.id
-            ? { ...cartItem, quantity: cartItem.quantity + 1 }
-            : cartItem
-        )
-      );
-      showToast(`${item.name} added to cart!`);
-    } else {
-      setCart([...cart, { ...item, quantity: 1 }]);
-      showToast(`${item.name} added to cart!`);
-    }
+    const existing = cart.find((c) => c.id === item.id);
+    if (existing) {
+      setCart(cart.map(c => c.id === item.id ? { ...c, quantity: c.quantity + 1 } : c));
+    } else setCart([...cart, { ...item, quantity: 1 }]);
   };
 
-  // ➕ Increase Quantity
-  const increaseQty = (id) => {
-    const item = cart.find((i) => i.id === id);
-    setCart(
-      cart.map((item) =>
-        item.id === id
-          ? { ...item, quantity: item.quantity + 1 }
-          : item
-      )
-    );
-    showToast(`${item.name} added to cart!`);
-  };
+  const increaseQty = (id) => setCart(cart.map(c => c.id === id ? { ...c, quantity: c.quantity + 1 } : c));
+  const decreaseQty = (id) => setCart(cart.map(c => c.id === id ? { ...c, quantity: c.quantity - 1 } : c).filter(c => c.quantity > 0));
 
-  // ➖ Decrease Quantity
-  const decreaseQty = (id) => {
-    const item = cart.find((i) => i.id === id);
-    const newCart = cart
-      .map((item) =>
-        item.id === id
-          ? { ...item, quantity: item.quantity - 1 }
-          : item
-      )
-      .filter((item) => item.quantity > 0);
+  const totalItems = cart.reduce((sum, i) => sum + i.quantity, 0);
+  const totalPrice = cart.reduce((sum, i) => sum + i.price * i.quantity, 0);
 
-    setCart(newCart);
-
-    if (item.quantity === 1) {
-      showToast(`${item.name} removed from cart!`);
-    }
-  };
-
-  const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-  const totalPrice = cart.reduce((sum, item) => sum + item.price * item.quantity, 0);
-
-  const filteredMenu =
-    category === "all"
-      ? menu
-      : menu.filter((item) => item.category === category);
-
-  // 💳 Checkout
-  const handleCheckout = () => {
-    if (cart.length === 0) return;
-    setShowCheckout(true);
-  };
-
-  // ✅ Place Order
-  const placeOrder = () => {
-    if (cart.length === 0) return;
-    setCart([]);
-    setShowCheckout(false);
-    closeCart();
-    showToast("Order placed successfully! 🔥");
-  };
+  const filteredMenu = category === "all" ? menu : menu.filter(i => i.category === category);
 
   return (
     <div>
-      {/* NAVBAR */}
-      <Navbar
-        totalItems={totalItems}
-        totalPrice={totalPrice}
-        setShowCart={openCart}
-      />
+      <Navbar totalItems={totalItems} totalPrice={totalPrice} setShowCart={openCart} />
 
-      {/* HERO SECTION */}
+      {/* HERO */}
       <div className="hero">
         <div className="hero-text">
           <h1>🔥 Insta-Broiler</h1>
@@ -153,20 +55,22 @@ function Home() {
         </div>
       </div>
 
-      {/* CATEGORY BUTTONS */}
+      {/* CATEGORY */}
       <div className="category-container">
-        <button className={category === "all" ? "active" : ""} onClick={() => setCategory("all")}>All</button>
-        <button className={category === "grill" ? "active" : ""} onClick={() => setCategory("grill")}>Grill Specials</button>
-        <button className={category === "royal" ? "active" : ""} onClick={() => setCategory("royal")}>Signature Royals</button>
-        <button className={category === "classic" ? "active" : ""} onClick={() => setCategory("classic")}>Classic Bites</button>
-        <button className={category === "sides" ? "active" : ""} onClick={() => setCategory("sides")}>Sides</button>
-        <button className={category === "drinks" ? "active" : ""} onClick={() => setCategory("drinks")}>Drinks</button>
-        <button className={category === "dessert" ? "active" : ""} onClick={() => setCategory("dessert")}>Desserts</button>
+        {["all","grill","royal","classic","sides","drinks","dessert"].map(cat => (
+          <button
+            key={cat}
+            className={category === cat ? "active" : ""}
+            onClick={() => setCategory(cat)}
+          >
+            {cat === "all" ? "All" : cat.charAt(0).toUpperCase() + cat.slice(1)}
+          </button>
+        ))}
       </div>
 
-      {/* MENU GRID */}
+      {/* MENU */}
       <div className="menu-grid">
-        {filteredMenu.map((item) => (
+        {filteredMenu.map(item => (
           <BurgerCard
             key={item.id}
             burger={item}
@@ -178,81 +82,36 @@ function Home() {
         ))}
       </div>
 
-      {/* SLIDING CART */}
+      {/* CART */}
       {showCart && (
         <div className="cart-overlay" onClick={closeCart}>
-          <div
-            className={`cart-panel ${animateCart ? "open" : ""}`}
-            onClick={(e) => e.stopPropagation()}
-          >
+          <div className={`cart-panel ${animateCart ? "open" : ""}`} onClick={e => e.stopPropagation()}>
             <div className="cart-header">
               <h2>Your Cart 🛒</h2>
               <button onClick={closeCart}>X</button>
             </div>
 
-            {cart.length === 0 && <p>Cart is empty</p>}
-
-            {cart.map((item) => (
-              <div key={item.id} className="cart-item">
-                <div>
-                  <h4>{item.name}</h4>
-                  <p>₹ {item.price} x {item.quantity}</p>
+            <div className="cart-items">
+              {cart.length === 0 && <p>Cart is empty</p>}
+              {cart.map(item => (
+                <div key={item.id} className="cart-item">
+                  <div>
+                    <h4>{item.name}</h4>
+                    <p>₹ {item.price} x {item.quantity}</p>
+                  </div>
+                  <div className="cart-buttons">
+                    <button onClick={() => decreaseQty(item.id)}>-</button>
+                    <button onClick={() => increaseQty(item.id)}>+</button>
+                  </div>
                 </div>
+              ))}
+            </div>
 
-                <div className="cart-buttons">
-                  <button onClick={() => decreaseQty(item.id)}>-</button>
-                  <button onClick={() => increaseQty(item.id)}>+</button>
-                </div>
-              </div>
-            ))}
-
-            <h3>Total: ₹ {totalPrice}</h3>
-
-            {cart.length > 0 && !showCheckout && (
-              <button className="checkout-btn" onClick={handleCheckout}>
-                Checkout
-              </button>
-            )}
-
-            {/* ✅ CHECKOUT MODAL */}
-            {showCheckout && (
-              <div className="checkout-modal">
-                <h2>Review Your Order</h2>
-
-                <div className="cart-items">
-  {cart.map((item) => (
-    <div key={item.id} className="cart-item">
-      <div>
-        <h4>{item.name}</h4>
-        <p>₹ {item.price} x {item.quantity}</p>
-      </div>
-      <div className="cart-buttons">
-        <button onClick={() => decreaseQty(item.id)}>-</button>
-        <button onClick={() => increaseQty(item.id)}>+</button>
-      </div>
-    </div>
-  ))}
-</div>
-
-<div className="cart-footer">
-  <h3>Total: ₹ {totalPrice}</h3>
-  <button className="checkout-btn">Checkout</button>
-</div>
-
-
-                <button className="back-btn" onClick={() => setShowCheckout(false)}>
-                  Back to Cart
-                </button>
-              </div>
-            )}
+            <div className="cart-footer">
+              <h3>Total: ₹ {totalPrice}</h3>
+              <button className="checkout-btn">Checkout</button>
+            </div>
           </div>
-        </div>
-      )}
-
-      {/* 🔔 Toast Notification */}
-      {toast.show && (
-        <div className="toast">
-          {toast.message}
         </div>
       )}
     </div>

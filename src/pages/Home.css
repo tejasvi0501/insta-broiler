@@ -275,14 +275,20 @@ body {
     width: 100%;
     right: -100%;
   }
+
   .cart-panel.open {
     right: 0;
   }
 
-  .checkout-modal {
-    width: 95%;
+  .cart-items {
+    max-height: calc(100vh - 140px); /* leave space for header + footer */
+  }
+
+  .cart-footer {
+    margin-top: auto;
   }
 }
+
 .burger-card button,
 .cart-buttons button,
 .checkout-btn,
@@ -311,12 +317,11 @@ body {
   }
 }
 .cart-items {
-  flex-grow: 1;         /* take available space */
-  overflow-y: auto;     /* make scrollable if many items */
-  margin-bottom: 15px;  /* space above footer */
+  flex-grow: 1;        /* makes this area take remaining height */
+  overflow-y: auto;    /* scroll if too many items */
+  margin-bottom: 15px; /* space above footer */
 }
 
 .cart-footer {
-  /* footer pinned below scrollable area */
-  margin-top: auto;
+  flex-shrink: 0;      /* ensure footer stays visible */
 }
