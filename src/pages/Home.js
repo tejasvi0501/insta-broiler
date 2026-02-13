@@ -8,8 +8,7 @@ function Home() {
   const [category, setCategory] = useState("all");
   const [showCart, setShowCart] = useState(false);
   const [animateCart, setAnimateCart] = useState(false);
-  const [showCheckout, setShowCheckout] = useState(false);
-
+  const [checkout, setCheckout] = useState(false); // 👈 checkout modal
 
   const menu = [
     { id: 1, name: "Fire Zinger Chicken", price: 199, category: "grill", image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd" },
@@ -28,7 +27,7 @@ function Home() {
 
   // 🛒 Cart functions
   const openCart = () => { setShowCart(true); setTimeout(() => setAnimateCart(true), 10); };
-  const closeCart = () => { setAnimateCart(false); setTimeout(() => setShowCart(false), 300); };
+  const closeCart = () => { setAnimateCart(false); setTimeout(() => setShowCart(false), 300); setCheckout(false); };
 
   const addToCart = (item) => {
     const existing = cart.find((c) => c.id === item.id);
@@ -44,6 +43,14 @@ function Home() {
   const totalPrice = cart.reduce((sum, i) => sum + i.price * i.quantity, 0);
 
   const filteredMenu = category === "all" ? menu : menu.filter(i => i.category === category);
+
+  // ✅ Place order
+  const placeOrder = () => {
+    alert("🎉 Your order is confirmed!");
+    setCart([]);
+    setCheckout(false);
+    setShowCart(false);
+  };
 
   return (
     <div>
@@ -86,69 +93,57 @@ function Home() {
 
       {/* CART */}
       {showCart && (
-  <div className="cart-overlay" onClick={closeCart}>
-    {showCheckout && (
-  <div className="cart-overlay" onClick={() => setShowCheckout(false)}>
-    <div className="checkout-modal" onClick={(e) => e.stopPropagation()}>
-      <h2>Confirm Your Order</h2>
-      {cart.map(item => (
-        <div key={item.id} className="checkout-item">
-          <span>{item.name} x {item.quantity}</span>
-          <span>₹ {item.price * item.quantity}</span>
-        </div>
-      ))}
-      <h3>Total: ₹ {totalPrice}</h3>
-      <button
-        className="place-order-btn"
-        onClick={() => {
-          setCart([]);           // empty cart
-          setShowCheckout(false); // close checkout modal
-          alert("✅ Order Placed Successfully!"); // success message
-        }}
-      >
-        Place Order
-      </button>
-      <button className="back-btn" onClick={() => setShowCheckout(false)}>
-        Back to Cart
-      </button>
-    </div>
-  </div>
-)}
-
-    <div className={`cart-panel ${animateCart ? "open" : ""}`} onClick={e => e.stopPropagation()}>
-      
-      <div className="cart-header">
-        <h2>Your Cart 🛒</h2>
-        <button onClick={closeCart}>X</button>
-      </div>
-
-      {/* Scrollable items */}
-      <div className="cart-items">
-        {cart.length === 0 && <p>Cart is empty</p>}
-        {cart.map(item => (
-          <div key={item.id} className="cart-item">
-            <div>
-              <h4>{item.name}</h4>
-              <p>₹ {item.price} x {item.quantity}</p>
+        <div className="cart-overlay" onClick={closeCart}>
+          <div className={`cart-panel ${animateCart ? "open" : ""}`} onClick={e => e.stopPropagation()}>
+            <div className="cart-header">
+              <h2>Your Cart 🛒</h2>
+              <button onClick={closeCart}>X</button>
             </div>
-            <div className="cart-buttons">
-              <button onClick={() => decreaseQty(item.id)}>-</button>
-              <button onClick={() => increaseQty(item.id)}>+</button>
+
+            {/* Scrollable cart items */}
+            <div className="cart-items" style={{ overflowY: "auto", maxHeight: "60vh" }}>
+              {cart.length === 0 && <p>Cart is empty</p>}
+              {cart.map(item => (
+                <div key={item.id} className="cart-item">
+                  <div>
+                    <h4>{item.name}</h4>
+                    <p>₹ {item.price} x {item.quantity}</p>
+                  </div>
+                  <div className="cart-buttons">
+                    <button onClick={() => decreaseQty(item.id)}>-</button>
+                    <button onClick={() => increaseQty(item.id)}>+</button>
+                  </div>
+                </div>
+              ))}
             </div>
+
+            {/* Checkout button */}
+            {!checkout && cart.length > 0 && (
+              <div className="cart-footer">
+                <h3>Total: ₹ {totalPrice}</h3>
+                <button className="checkout-btn" onClick={() => setCheckout(true)}>Checkout</button>
+              </div>
+            )}
+
+            {/* Checkout modal */}
+            {checkout && (
+              <div className="checkout-modal">
+                <h2>Checkout</h2>
+                {cart.map(item => (
+                  <div key={item.id} className="checkout-item">
+                    <span>{item.name} x {item.quantity}</span>
+                    <span>₹ {item.price * item.quantity}</span>
+                  </div>
+                ))}
+                <h3>Total: ₹ {totalPrice}</h3>
+                <button className="place-order-btn" onClick={placeOrder}>Place Order</button>
+                <button className="back-btn" onClick={() => setCheckout(false)}>Back to Cart</button>
+              </div>
+            )}
+
           </div>
-        ))}
-      </div>
-
-      {/* Fixed checkout + total */}
-      <div className="cart-footer">
-  <h3>Total: ₹ {totalPrice}</h3>
-  <button className="checkout-btn" onClick={() => setShowCheckout(true)}>Checkout</button>
-</div>
-
-
-    </div>
-  </div>
-)}
+        </div>
+      )}
 
     </div>
   );
