@@ -84,36 +84,41 @@ function Home() {
 
       {/* CART */}
       {showCart && (
-        <div className="cart-overlay" onClick={closeCart}>
-          <div className={`cart-panel ${animateCart ? "open" : ""}`} onClick={e => e.stopPropagation()}>
-            <div className="cart-header">
-              <h2>Your Cart 🛒</h2>
-              <button onClick={closeCart}>X</button>
-            </div>
+  <div className="cart-overlay" onClick={closeCart}>
+    <div className={`cart-panel ${animateCart ? "open" : ""}`} onClick={e => e.stopPropagation()}>
+      
+      <div className="cart-header">
+        <h2>Your Cart 🛒</h2>
+        <button onClick={closeCart}>X</button>
+      </div>
 
-            <div className="cart-items">
-              {cart.length === 0 && <p>Cart is empty</p>}
-              {cart.map(item => (
-                <div key={item.id} className="cart-item">
-                  <div>
-                    <h4>{item.name}</h4>
-                    <p>₹ {item.price} x {item.quantity}</p>
-                  </div>
-                  <div className="cart-buttons">
-                    <button onClick={() => decreaseQty(item.id)}>-</button>
-                    <button onClick={() => increaseQty(item.id)}>+</button>
-                  </div>
-                </div>
-              ))}
+      {/* Scrollable items */}
+      <div className="cart-items">
+        {cart.length === 0 && <p>Cart is empty</p>}
+        {cart.map(item => (
+          <div key={item.id} className="cart-item">
+            <div>
+              <h4>{item.name}</h4>
+              <p>₹ {item.price} x {item.quantity}</p>
             </div>
-
-            <div className="cart-footer">
-              <h3>Total: ₹ {totalPrice}</h3>
-              <button className="checkout-btn">Checkout</button>
+            <div className="cart-buttons">
+              <button onClick={() => decreaseQty(item.id)}>-</button>
+              <button onClick={() => increaseQty(item.id)}>+</button>
             </div>
           </div>
-        </div>
-      )}
+        ))}
+      </div>
+
+      {/* Fixed checkout + total */}
+      <div className="cart-footer">
+        <h3>Total: ₹ {totalPrice}</h3>
+        <button className="checkout-btn">Checkout</button>
+      </div>
+
+    </div>
+  </div>
+)}
+
     </div>
   );
 }
