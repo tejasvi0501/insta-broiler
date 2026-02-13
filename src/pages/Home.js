@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import BurgerCard from "../components/BurgerCard";
 import Navbar from "../components/Navbar";
 import "./Home.css";
@@ -8,7 +8,9 @@ function Home() {
   const [category, setCategory] = useState("all");
   const [showCart, setShowCart] = useState(false);
   const [animateCart, setAnimateCart] = useState(false);
-  const [checkout, setCheckout] = useState(false); // 👈 checkout modal
+  const [checkout, setCheckout] = useState(false);
+  const [toastMessage, setToastMessage] = useState(""); // Toast text
+  const [showToast, setShowToast] = useState(false); // Toast visibility
 
   const menu = [
     { id: 1, name: "Fire Zinger Chicken", price: 199, category: "grill", image: "https://images.unsplash.com/photo-1568901346375-23c9450c58cd" },
@@ -29,15 +31,33 @@ function Home() {
   const openCart = () => { setShowCart(true); setTimeout(() => setAnimateCart(true), 10); };
   const closeCart = () => { setAnimateCart(false); setTimeout(() => setShowCart(false), 300); setCheckout(false); };
 
+  // Toast helper
+  const showToastMessage = (message) => {
+    setToastMessage(message);
+    setShowToast(true);
+    setTimeout(() => setShowToast(false), 2000);
+  };
+
   const addToCart = (item) => {
     const existing = cart.find((c) => c.id === item.id);
     if (existing) {
       setCart(cart.map(c => c.id === item.id ? { ...c, quantity: c.quantity + 1 } : c));
     } else setCart([...cart, { ...item, quantity: 1 }]);
+    showToastMessage(`${item.name} added to cart`);
   };
 
-  const increaseQty = (id) => setCart(cart.map(c => c.id === id ? { ...c, quantity: c.quantity + 1 } : c));
-  const decreaseQty = (id) => setCart(cart.map(c => c.id === id ? { ...c, quantity: c.quantity - 1 } : c).filter(c => c.quantity > 0));
+  const increaseQty = (id) => {
+    const item = cart.find(c => c.id === id);
+    setCart(cart.map(c => c.id === id ? { ...c, quantity: c.quantity + 1 } : c));
+    if (item) showToastMessage(`${item.name} added to cart`);
+  };
+
+  const decreaseQty = (id) => {
+    const item = cart.find(c => c.id === id);
+    const updatedCart = cart.map(c => c.id === id ? { ...c, quantity: c.quantity - 1 } : c).filter(c => c.quantity > 0);
+    setCart(updatedCart);
+    if (item) showToastMessage(`${item.name} removed from cart`);
+  };
 
   const totalItems = cart.reduce((sum, i) => sum + i.quantity, 0);
   const totalPrice = cart.reduce((sum, i) => sum + i.price * i.quantity, 0);
@@ -46,10 +66,10 @@ function Home() {
 
   // ✅ Place order
   const placeOrder = () => {
-    alert("🎉 Your order is confirmed!");
     setCart([]);
     setCheckout(false);
     setShowCart(false);
+    showToastMessage("Order confirmed! 🎉");
   };
 
   return (
@@ -95,6 +115,7 @@ function Home() {
       {showCart && (
         <div className="cart-overlay" onClick={closeCart}>
           <div className={`cart-panel ${animateCart ? "open" : ""}`} onClick={e => e.stopPropagation()}>
+
             <div className="cart-header">
               <h2>Your Cart 🛒</h2>
               <button onClick={closeCart}>X</button>
@@ -144,6 +165,9 @@ function Home() {
           </div>
         </div>
       )}
+
+      {/* Toast notification */}
+      {showToast && <div className="toast">{toastMessage}</div>}
 
     </div>
   );
